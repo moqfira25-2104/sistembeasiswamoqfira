@@ -1,0 +1,863 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Form Penilaian Kelayakan Beasiswa - Moqfira Setiani</title>
+
+  <style>
+    /* ===================================================================
+       Sistem Berbasis Aturan (Rule-Based System) - Penentuan Beasiswa
+       All-in-One Standalone File (Bisa Langsung Dibuka di HP / WhatsApp)
+       Mahasiswa : MOQFIRA SETIANI (NIM: 20252105039)
+       Dosen     : Andi Maulidinnawati A. K. Parewe, S.Kom., M.Kom.
+       =================================================================== */
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      min-height: 100vh;
+      background: linear-gradient(135deg, #7188a4 0%, #4a6382 50%, #354b66 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px 14px;
+    }
+
+    /* Card Utama Form di Tengah */
+    .main-card {
+      background: #ffffff;
+      border-radius: 18px;
+      box-shadow: 0 12px 35px rgba(0, 0, 0, 0.22);
+      width: 100%;
+      max-width: 900px;
+      padding: 32px 35px;
+      position: relative;
+      animation: fadeIn 0.3s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(8px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Tombol Menu Garis 3 di Kanan Atas Card */
+    .menu-toggle-btn {
+      position: absolute;
+      top: 22px;
+      right: 24px;
+      width: 40px;
+      height: 40px;
+      background-color: #f8fafc;
+      border: 1.5px solid #cbd5e1;
+      border-radius: 8px;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 4px;
+      transition: all 0.2s ease;
+      z-index: 10;
+    }
+
+    .menu-toggle-btn:hover,
+    .menu-toggle-btn:active {
+      background-color: #e2e8f0;
+      border-color: #94a3b8;
+    }
+
+    .menu-toggle-btn.active-menu-btn {
+      background-color: #007bff;
+      border-color: #0069d9;
+    }
+
+    .menu-toggle-btn.active-menu-btn .menu-bar {
+      background-color: #ffffff;
+    }
+
+    .menu-bar {
+      display: block;
+      width: 19px;
+      height: 2.5px;
+      background-color: #334155;
+      border-radius: 2px;
+      transition: background-color 0.2s ease;
+    }
+
+    /* Identitas Mahasiswa & Dosen */
+    .identity-bar {
+      text-align: center;
+      font-size: 11.5px;
+      font-weight: 600;
+      color: #475569;
+      letter-spacing: 0.03em;
+      margin-bottom: 8px;
+      padding: 0 45px;
+      text-transform: uppercase;
+      line-height: 1.45;
+    }
+
+    /* Judul Form */
+    .form-title {
+      color: #0a0a0a;
+      font-size: 23px;
+      font-weight: 700;
+      text-align: center;
+      margin-bottom: 22px;
+    }
+
+    /* Panel Keterangan Basis Aturan (Muncul saat tombol garis 3 dipencet) */
+    .rules-collapse-box {
+      background-color: #f8fafc;
+      border: 1.5px solid #cbd5e1;
+      border-radius: 12px;
+      padding: 16px 18px;
+      margin-bottom: 20px;
+      animation: slideDown 0.25s ease-out;
+    }
+
+    @keyframes slideDown {
+      from {
+        opacity: 0;
+        transform: translateY(-8px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .rules-box-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 12px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid #e2e8f0;
+    }
+
+    .rule-badge-tag {
+      display: inline-block;
+      background-color: #eff6ff;
+      color: #1d4ed8;
+      font-size: 10.5px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      padding: 2.5px 9px;
+      border-radius: 999px;
+      border: 1px solid #bfdbfe;
+      margin-bottom: 5px;
+    }
+
+    .rules-box-heading {
+      color: #0f172a;
+      font-size: 16.5px;
+      font-weight: 700;
+      margin-bottom: 3px;
+    }
+
+    .rules-box-sub {
+      font-size: 11.5px;
+      color: #64748b;
+      line-height: 1.4;
+    }
+
+    .rules-box-sub code {
+      background-color: #e2e8f0;
+      padding: 1px 5px;
+      border-radius: 4px;
+      color: #0284c7;
+      font-weight: 700;
+    }
+
+    .btn-close-rules {
+      background-color: #e2e8f0;
+      border: none;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: bold;
+      color: #475569;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.15s ease;
+      flex-shrink: 0;
+    }
+
+    .btn-close-rules:hover,
+    .btn-close-rules:active {
+      background-color: #cbd5e1;
+      color: #0f172a;
+    }
+
+    /* Tabel Kolom Kecil R1, R2, R3 */
+    .rule-mini-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+      text-align: left;
+    }
+
+    .rule-mini-table th {
+      background-color: #ffffff;
+      color: #334155;
+      font-weight: 700;
+      padding: 8px 10px;
+      border-bottom: 2px solid #cbd5e1;
+      font-size: 11.5px;
+      white-space: nowrap;
+    }
+
+    .rule-mini-table td {
+      padding: 9px 10px;
+      border-bottom: 1px solid #e2e8f0;
+      color: #1f2937;
+      vertical-align: middle;
+    }
+
+    .rule-mini-table tbody tr {
+      cursor: pointer;
+      transition: background-color 0.15s ease;
+    }
+
+    .rule-mini-table tbody tr:hover,
+    .rule-mini-table tbody tr:active {
+      background-color: #eff6ff;
+    }
+
+    .rule-mini-table tbody tr.active-rule-row {
+      background-color: #eff6ff !important;
+      outline: 2px solid #2563eb;
+    }
+
+    .rule-id-pill {
+      font-size: 10.5px;
+      font-weight: 800;
+      padding: 2.5px 6.5px;
+      border-radius: 4px;
+      color: #ffffff;
+      white-space: nowrap;
+      display: inline-block;
+    }
+
+    .pill-r1 {
+      background-color: #059669;
+    }
+
+    .pill-r2 {
+      background-color: #d97706;
+    }
+
+    .pill-r3 {
+      background-color: #dc2626;
+    }
+
+    .col-desc {
+      font-size: 11px;
+      color: #64748b;
+      line-height: 1.35;
+    }
+
+    .rules-box-footer {
+      margin-top: 10px;
+      font-size: 11px;
+      color: #64748b;
+      text-align: center;
+    }
+
+    /* Grid Form Input Simetris 2x2 */
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 13px;
+      margin-bottom: 20px;
+    }
+
+    .input-control {
+      width: 100%;
+      padding: 11px 13px;
+      font-size: 15px;
+      /* 15-16px mencegah browser HP auto-zoom */
+      border: 1.5px solid #d1d5db;
+      border-radius: 8px;
+      color: #1f2937;
+      background-color: #ffffff;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .input-control:focus {
+      border-color: #007bff;
+      box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.15);
+    }
+
+    select.input-control {
+      cursor: pointer;
+    }
+
+    /* Tombol Aksi */
+    .btn-group {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+
+    .btn {
+      padding: 12px 28px;
+      font-size: 13.5px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.2s, transform 0.1s;
+      width: 100%;
+      max-width: 270px;
+      text-align: center;
+      min-height: 44px;
+      /* Touch target standar HP */
+    }
+
+    .btn:active {
+      transform: scale(0.97);
+    }
+
+    .btn-primary {
+      background-color: #1E3A8A;
+      color: #ffffff;
+    }
+
+    .btn-primary:hover,
+    .btn-primary:active {
+      background-color: #08be11;
+    }
+
+    .btn-danger {
+      background-color: #e02424;
+      color: #ffffff;
+    }
+
+    .btn-danger:hover,
+    .btn-danger:active {
+      background-color: #c81e1e;
+    }
+
+    /* Bagian Tabel & Hasil */
+    #tableSection {
+      margin-top: 15px;
+      animation: fadeIn 0.3s ease-in-out;
+    }
+
+    .table-responsive {
+      width: 100%;
+      overflow-x: auto;
+      border-radius: 6px;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .styled-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+      text-align: center;
+      min-width: 580px;
+      /* Memastikan tabel terbaca jelas di HP melalui scroll geser */
+    }
+
+    .styled-table thead tr {
+      background-color: #007bff;
+      color: #ffffff;
+    }
+
+    .styled-table th {
+      padding: 11px 9px;
+      font-weight: 700;
+      border: 1px solid #0069d9;
+      letter-spacing: 0.02em;
+    }
+
+    .styled-table td {
+      padding: 10px 8px;
+      border: 1px solid #e5e7eb;
+      color: #1f2937;
+      font-weight: 500;
+    }
+
+    .styled-table tbody tr:hover,
+    .styled-table tbody tr:active {
+      background-color: #eff6ff;
+    }
+
+    /* Badge Status Keputusan */
+    .badge-status {
+      display: inline-block;
+      padding: 3.5px 10px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .badge-utama {
+      background-color: #d1fae5;
+      color: #065f46;
+      border: 1px solid #a7f3d0;
+    }
+
+    .badge-pendamping {
+      background-color: #fef3c7;
+      color: #92400e;
+      border: 1px solid #fde68a;
+    }
+
+    .badge-tidak {
+      background-color: #fee2e2;
+      color: #991b1b;
+      border: 1px solid #fecaca;
+    }
+
+    .btn-delete-row {
+      background: transparent;
+      color: #ef4444;
+      border: none;
+      font-size: 16px;
+      cursor: pointer;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-weight: bold;
+    }
+
+    .btn-delete-row:hover,
+    .btn-delete-row:active {
+      background: #fee2e2;
+    }
+
+    /* Box Ringkasan Biru */
+    .summary-box {
+      background-color: #e7f3ff;
+      border: 1px solid #bde0fe;
+      border-radius: 8px;
+      padding: 11px 16px;
+      text-align: center;
+      color: #0066cc;
+      font-weight: 600;
+      font-size: 13px;
+      margin-top: 16px;
+      line-height: 1.4;
+    }
+
+    /* =======================================================
+       Optimasi Khusus Tampilan Layar HP (Responsive)
+       ======================================================= */
+    @media (max-width: 640px) {
+      body {
+        padding: 12px 8px;
+      }
+
+      .main-card {
+        padding: 22px 14px;
+        border-radius: 14px;
+      }
+
+      .menu-toggle-btn {
+        top: 16px;
+        right: 14px;
+        width: 38px;
+        height: 38px;
+      }
+
+      .identity-bar {
+        font-size: 10.5px;
+        line-height: 1.4;
+        padding: 0 40px 0 0;
+        text-align: left;
+      }
+
+      .form-title {
+        font-size: 19px;
+        margin-top: 12px;
+        margin-bottom: 18px;
+      }
+
+      .form-grid {
+        grid-template-columns: 1fr;
+        gap: 11px;
+      }
+
+      .rule-mini-table {
+        min-width: 440px;
+      }
+
+      .btn {
+        max-width: 100%;
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Card Utama Form di Tengah -->
+  <main class="main-card">
+
+    <!-- Tombol Garis-Garis 3 (Menu Keterangan Basis Aturan) -->
+    <button type="button" class="menu-toggle-btn" id="btnToggleRules" onclick="toggleRules()"
+      title="Lihat Basis Aturan (IF-ELIF-ELSE)">
+      <span class="menu-bar"></span>
+      <span class="menu-bar"></span>
+      <span class="menu-bar"></span>
+    </button>
+
+    <!-- Identitas Akademik Mahasiswa & Dosen -->
+    <div class="identity-bar">
+      MOQFIRA SETIANI &bull; NIM: 20252105039 &bull; KELAS: S.301 &bull; DOSEN: Andi Maulidinnawati A. K. Parewe,
+      S.Kom., M.Kom.
+    </div>
+
+    <!-- Judul Form -->
+    <h2 class="form-title">Form Penilaian Kelayakan Beasiswa</h2>
+
+    <!-- Panel Keterangan Basis Aturan (Muncul saat tombol garis 3 dipencet) -->
+    <div id="rulesCollapsePanel" class="rules-collapse-box" style="display: none;">
+      <div class="rules-box-header">
+        <div class="rules-box-titles">
+          <span class="rule-badge-tag">SISTEM PAKAR &bull; RULE-BASED</span>
+          <h3 class="rules-box-heading">Basis Aturan (IF - ELIF - ELSE)</h3>
+          <p class="rules-box-sub">
+            <strong>Logika Berjenjang:</strong> <code>IF</code> (Utama) &rarr; <code>ELIF</code> (Alternatif) &rarr;
+            <code>ELSE</code> (Default)
+          </p>
+        </div>
+        <button type="button" class="btn-close-rules" onclick="toggleRules()" title="Tutup Keterangan">✕</button>
+      </div>
+
+      <!-- Tabel Kolom Kecil R1, R2, R3 (Singkat Tapi Jelas) -->
+      <div class="table-responsive">
+        <table class="rule-mini-table">
+          <thead>
+            <tr>
+              <th style="width: 85px;">Aturan</th>
+              <th>Syarat Kriteria</th>
+              <th>Hasil Keputusan</th>
+              <th>Keterangan</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- R1 -->
+            <tr id="row-r1" onclick="applyQuickRule('Sangat Baik', 'Aktif', 'Kurang Mampu')"
+              title="Klik untuk uji aturan R1">
+              <td><span class="rule-id-pill pill-r1">R1 (IF)</span></td>
+              <td><strong>Sangat Baik</strong> + <strong>Aktif</strong> + <strong>Kurang Mampu</strong></td>
+              <td><span class="badge-status badge-utama">Prioritas Utama</span></td>
+              <td class="col-desc">Prestasi unggul, aktif &amp; kurang mampu.</td>
+            </tr>
+
+            <!-- R2 -->
+            <tr id="row-r2" onclick="applyQuickRule('Baik', 'Pasif', 'Kurang Mampu')" title="Klik untuk uji aturan R2">
+              <td><span class="rule-id-pill pill-r2">R2 (ELIF)</span></td>
+              <td><strong>Baik / Sangat Baik</strong> + <strong>Kurang Mampu</strong></td>
+              <td><span class="badge-status badge-pendamping">Prioritas Pendamping</span></td>
+              <td class="col-desc">Sikap baik/sangat baik &amp; kurang mampu.</td>
+            </tr>
+
+            <!-- R3 -->
+            <tr id="row-r3" onclick="applyQuickRule('Cukup', 'Pasif', 'Mampu')" title="Klik untuk uji aturan R3">
+              <td><span class="rule-id-pill pill-r3">R3 (ELSE)</span></td>
+              <td><strong>Kondisi Lainnya</strong></td>
+              <td><span class="badge-status badge-tidak">Tidak Direkomendasikan</span></td>
+              <td class="col-desc">Ekonomi mampu atau sikap belum mencukupi.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Petunjuk Singkat -->
+      <div class="rules-box-footer">
+        💡 <em>Klik salah satu baris aturan di atas untuk otomatis mengisi nilai ke form input di bawah.</em>
+      </div>
+    </div>
+
+    <!-- Form Input Kriteria (4 Input Bersih Simetris) -->
+    <div class="form-grid">
+      <div>
+        <input type="text" id="inputId" class="input-control" placeholder="ID / Nama Mahasiswa" value="20252105039">
+      </div>
+      <div>
+        <select id="selectSikap" class="input-control">
+          <option value="Sangat Baik">Sikap: Sangat Baik</option>
+          <option value="Baik">Sikap: Baik</option>
+          <option value="Cukup">Sikap: Cukup</option>
+          <option value="Kurang">Sikap: Kurang</option>
+        </select>
+      </div>
+      <div>
+        <select id="selectKeaktifan" class="input-control">
+          <option value="Aktif">Keaktifan: Aktif</option>
+          <option value="Pasif">Keaktifan: Pasif</option>
+        </select>
+      </div>
+      <div>
+        <select id="selectEkonomi" class="input-control">
+          <option value="Kurang Mampu">Status Keuangan: Kurang Mampu</option>
+          <option value="Mampu">Status Keuangan: Mampu</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Tombol Aksi -->
+    <div class="btn-group">
+      <button type="button" class="btn btn-primary" onclick="addData()">TAMBAH DATA</button>
+      <button type="button" class="btn btn-danger" onclick="clearAllData()">HAPUS SEMUA DATA</button>
+    </div>
+
+    <!-- Bagian Tabel & Hasil (Muncul Saat Tombol Tambah Data Ditekan) -->
+    <div id="tableSection" style="display: none;">
+      <div class="table-responsive">
+        <table class="styled-table">
+          <thead>
+            <tr>
+              <th>ID Mahasiswa</th>
+              <th>Sikap / Perilaku</th>
+              <th>Keaktifan</th>
+              <th>Status Keuangan</th>
+              <th>Aturan Terpenuhi</th>
+              <th>Hasil Keputusan</th>
+              <th style="width: 50px;">Aksi</th>
+            </tr>
+          </thead>
+          <tbody id="tableBody">
+            <!-- Diisi otomatis oleh JavaScript saat tombol ditekan -->
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Box Ringkasan Sesuai Gaya Box Spearman di Gambar -->
+      <div id="summaryBox" class="summary-box">
+        <!-- Diisi otomatis oleh JavaScript -->
+      </div>
+    </div>
+
+  </main>
+
+  <!-- JavaScript Logika & Interaktivitas (Langsung Tertanam / All-in-One) -->
+  <script>
+    // Awalnya daftar data kosong (tabel disembunyikan sampai tombol Tambah Data ditekan)
+    let studentList = [];
+
+    // Fungsi Toggle Buka / Tutup Panel Basis Aturan (Tombol Garis 3)
+    function toggleRules() {
+      const panel = document.getElementById('rulesCollapsePanel');
+      const btn = document.getElementById('btnToggleRules');
+      if (!panel) return;
+
+      if (panel.style.display === 'none' || panel.style.display === '') {
+        panel.style.display = 'block';
+        if (btn) btn.classList.add('active-menu-btn');
+      } else {
+        panel.style.display = 'none';
+        if (btn) btn.classList.remove('active-menu-btn');
+      }
+    }
+
+    // Fungsi Evaluasi Rule-Based System (Forward Chaining IF - ELIF - ELSE)
+    function evaluateScholarship(sikap, keaktifan, ekonomi) {
+      // Aturan 1 (R1 - IF)
+      if (sikap === "Sangat Baik" && keaktifan === "Aktif" && ekonomi === "Kurang Mampu") {
+        return {
+          rule: "R1",
+          status: "Prioritas Utama",
+          badgeClass: "badge-utama"
+        };
+      }
+
+      // Aturan 2 (R2 - ELIF)
+      if ((sikap === "Baik" || sikap === "Sangat Baik") && ekonomi === "Kurang Mampu") {
+        return {
+          rule: "R2",
+          status: "Prioritas Pendamping",
+          badgeClass: "badge-pendamping"
+        };
+      }
+
+      // Aturan 3 (R3 - ELSE)
+      return {
+        rule: "R3",
+        status: "Tidak Direkomendasikan",
+        badgeClass: "badge-tidak"
+      };
+    }
+
+    // Sorot Baris Aturan Aktif di Tabel Kolom Kecil
+    function updateLiveRulePreview() {
+      const selectSikap = document.getElementById('selectSikap');
+      const selectKeaktifan = document.getElementById('selectKeaktifan');
+      const selectEkonomi = document.getElementById('selectEkonomi');
+
+      if (!selectSikap || !selectKeaktifan || !selectEkonomi) return;
+
+      const sikap = selectSikap.value;
+      const keaktifan = selectKeaktifan.value;
+      const ekonomi = selectEkonomi.value;
+
+      const result = evaluateScholarship(sikap, keaktifan, ekonomi);
+
+      // Hapus highlight dari semua baris tabel aturan
+      const rows = ['row-r1', 'row-r2', 'row-r3'];
+      rows.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.classList.remove('active-rule-row');
+      });
+
+      // Tambahkan highlight biru pada baris aturan yang cocok saat ini
+      const activeId = result.rule === 'R1' ? 'row-r1' : (result.rule === 'R2' ? 'row-r2' : 'row-r3');
+      const activeEl = document.getElementById(activeId);
+      if (activeEl) {
+        activeEl.classList.add('active-rule-row');
+      }
+    }
+
+    // Pintasan Cepat: Klik baris aturan untuk otomatis mengisi form
+    function applyQuickRule(sikap, keaktifan, ekonomi) {
+      const selectSikap = document.getElementById('selectSikap');
+      const selectKeaktifan = document.getElementById('selectKeaktifan');
+      const selectEkonomi = document.getElementById('selectEkonomi');
+
+      if (selectSikap) selectSikap.value = sikap;
+      if (selectKeaktifan) selectKeaktifan.value = keaktifan;
+      if (selectEkonomi) selectEkonomi.value = ekonomi;
+
+      updateLiveRulePreview();
+    }
+
+    // Render Tabel Data & Kotak Ringkasan
+    function renderTable() {
+      const tableSection = document.getElementById('tableSection');
+      const tbody = document.getElementById('tableBody');
+
+      if (studentList.length === 0) {
+        tableSection.style.display = 'none';
+        tbody.innerHTML = '';
+        return;
+      }
+
+      tableSection.style.display = 'block';
+      tbody.innerHTML = '';
+
+      let countUtama = 0;
+      let countPendamping = 0;
+      let countTidak = 0;
+
+      studentList.forEach((item, index) => {
+        const result = evaluateScholarship(item.sikap, item.keaktifan, item.ekonomi);
+
+        if (result.status === "Prioritas Utama") countUtama++;
+        else if (result.status === "Prioritas Pendamping") countPendamping++;
+        else countTidak++;
+
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td><strong>${escapeHtml(item.id)}</strong></td>
+          <td>${escapeHtml(item.sikap)}</td>
+          <td>${escapeHtml(item.keaktifan)}</td>
+          <td>${escapeHtml(item.ekonomi)}</td>
+          <td><strong>${result.rule}</strong></td>
+          <td><span class="badge-status ${result.badgeClass}">${result.status}</span></td>
+          <td>
+            <button class="btn-delete-row" onclick="deleteRow(${index})" title="Hapus baris ini">✕</button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      const summaryBox = document.getElementById('summaryBox');
+      summaryBox.textContent = `Total Data: ${studentList.length} Mahasiswa | Prioritas Utama: ${countUtama} | Prioritas Pendamping: ${countPendamping} | Tidak Direkomendasikan: ${countTidak}`;
+    }
+
+    // Tambah Data Mahasiswa
+    function addData() {
+      const inputId = document.getElementById('inputId');
+      const selectSikap = document.getElementById('selectSikap');
+      const selectKeaktifan = document.getElementById('selectKeaktifan');
+      const selectEkonomi = document.getElementById('selectEkonomi');
+
+      let id = inputId.value.trim();
+      const sikap = selectSikap.value;
+      const keaktifan = selectKeaktifan.value;
+      const ekonomi = selectEkonomi.value;
+
+      if (!id) {
+        id = "20252105039";
+        inputId.value = id;
+      }
+
+      studentList.push({id, sikap, keaktifan, ekonomi});
+      renderTable();
+
+      inputId.value = '';
+      inputId.placeholder = "ID / Nama Mahasiswa berikutnya...";
+      inputId.focus();
+    }
+
+    // Hapus Satu Baris Data
+    function deleteRow(index) {
+      studentList.splice(index, 1);
+      renderTable();
+    }
+
+    // Hapus Semua Data
+    function clearAllData() {
+      if (studentList.length === 0) return;
+      studentList = [];
+      renderTable();
+      const inputId = document.getElementById('inputId');
+      inputId.value = '';
+      inputId.placeholder = "ID / Nama Mahasiswa";
+      inputId.focus();
+    }
+
+    // Helper Sanitasi HTML
+    function escapeHtml(str) {
+      return str.replace(/[&<>'"]/g,
+        tag => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;'}[tag] || tag)
+      );
+    }
+
+    // Inisialisasi Event Listener
+    document.addEventListener('DOMContentLoaded', () => {
+      const selectSikap = document.getElementById('selectSikap');
+      const selectKeaktifan = document.getElementById('selectKeaktifan');
+      const selectEkonomi = document.getElementById('selectEkonomi');
+
+      if (selectSikap) selectSikap.addEventListener('change', updateLiveRulePreview);
+      if (selectKeaktifan) selectKeaktifan.addEventListener('change', updateLiveRulePreview);
+      if (selectEkonomi) selectEkonomi.addEventListener('change', updateLiveRulePreview);
+
+      updateLiveRulePreview();
+    });
+  </script>
+</body>
+
+</html>
